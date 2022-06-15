@@ -5,6 +5,7 @@ const uploadFile = require("../middleware/upload");
 const fs = require("fs");
 const baseUrl = "http://localhost:5000/files/";
 const { spawn } = require("child_process");
+const logOutput = (name) => (data) => console.log(data.toString());
 // SIGNING UP USER
 const signup = async (req, res) => {
   const { email, password } = req.body;
@@ -194,17 +195,27 @@ const download = (req, res) => {
 };
 
 const matchFace = (req, res) => {
-  let dataToSend;
+  
+  let dataToSend="";
   // spawn new child process to call the python script
-  const python = spawn("python3", ["match_faces.py"]);
+  const python1 = spawn("python", ["match_faces.py"]);
   // collect data from script
-  python.stdout.on("data", function (data) {
+  
+  python1.stdout.on("data", function (data) {
+    console.log("this is data",data)
     console.log("Pipe data from python script ...");
     dataToSend = data.toString().replace(/['"]+/g, '');
+    console.log(dataToSend)
 
   });
+  
+  python1.stderr.on(
+    'data',
+    logOutput('stderr')
+  );
+
   // in close event we are sure that stream from child process is closed
-  python.on("close", async (code) => {
+  python1.on("close", async (code) => {
     console.log(`child process close all stdio with code ${code}`);
     // send data to browser
     console.log(dataToSend)

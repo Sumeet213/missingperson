@@ -11,9 +11,9 @@ let storage = multer.diskStorage({
     //folder==> 0 missing cases-->known cases   
     //folder==>1 reported cases --> unknown cases
     if (req.body.folder === "1" ) {
-      cb(null,  directory+'unknown');
+      cb(null,  directory+'known');
     } else {
-      cb(null,directory+ 'known');
+      cb(null,directory+ 'unknown');
     }
     // cb(null, __basedir + "/resources/static/assets/uploads/");
   },
